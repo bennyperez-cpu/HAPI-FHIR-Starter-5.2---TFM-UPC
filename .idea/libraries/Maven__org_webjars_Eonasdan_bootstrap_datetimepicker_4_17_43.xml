@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.webjars:Eonasdan-bootstrap-datetimepicker:4.17.43">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/webjars/Eonasdan-bootstrap-datetimepicker/4.17.43/Eonasdan-bootstrap-datetimepicker-4.17.43.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/webjars/Eonasdan-bootstrap-datetimepicker/4.17.43/Eonasdan-bootstrap-datetimepicker-4.17.43-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/webjars/Eonasdan-bootstrap-datetimepicker/4.17.43/Eonasdan-bootstrap-datetimepicker-4.17.43-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
