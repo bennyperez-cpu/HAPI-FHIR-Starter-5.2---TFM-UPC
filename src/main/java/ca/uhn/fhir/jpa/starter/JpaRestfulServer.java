@@ -28,8 +28,8 @@ public class JpaRestfulServer extends BaseJpaRestfulServer {
     super.initialize();
 
     // Add your own customization here
-    PatientAndAdminAuthorizationInterceptor authInterceptor = new PatientAndAdminAuthorizationInterceptor();
-    registerInterceptor(authInterceptor);
+   // PatientAndAdminAuthorizationInterceptor authInterceptor = new PatientAndAdminAuthorizationInterceptor();
+   // registerInterceptor(authInterceptor);
   }
 
 }

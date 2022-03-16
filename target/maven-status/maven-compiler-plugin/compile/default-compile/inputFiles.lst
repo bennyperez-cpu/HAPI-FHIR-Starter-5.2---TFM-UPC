@@ -1,14 +1,15 @@
-/home/Benny/Programas/Programs FHIR/hapi-fhir-jpaserver-starter-5.2.0/src/main/java/ca/uhn/fhir/jpa/starter/JpaRestfulServer.java
-/home/Benny/Programas/Programs FHIR/hapi-fhir-jpaserver-starter-5.2.0/src/main/java/ca/uhn/fhir/jpa/starter/AppProperties.java
-/home/Benny/Programas/Programs FHIR/hapi-fhir-jpaserver-starter-5.2.0/src/main/java/ca/uhn/fhir/jpa/starter/JpaHibernateDialectProvider.java
-/home/Benny/Programas/Programs FHIR/hapi-fhir-jpaserver-starter-5.2.0/src/main/java/ca/uhn/fhir/jpa/starter/FhirServerConfigR4.java
-/home/Benny/Programas/Programs FHIR/hapi-fhir-jpaserver-starter-5.2.0/src/main/java/ca/uhn/fhir/jpa/starter/EnvironmentHelper.java
-/home/Benny/Programas/Programs FHIR/hapi-fhir-jpaserver-starter-5.2.0/src/main/java/ca/uhn/fhir/jpa/empi/EmpiConfigCondition.java
-/home/Benny/Programas/Programs FHIR/hapi-fhir-jpaserver-starter-5.2.0/src/main/java/ca/uhn/fhir/jpa/starter/FhirServerConfigDstu3.java
-/home/Benny/Programas/Programs FHIR/hapi-fhir-jpaserver-starter-5.2.0/src/main/java/ca/uhn/fhir/jpa/starter/FhirServerConfigCommon.java
-/home/Benny/Programas/Programs FHIR/hapi-fhir-jpaserver-starter-5.2.0/src/main/java/ca/uhn/fhir/jpa/starter/FhirTesterConfig.java
-/home/Benny/Programas/Programs FHIR/hapi-fhir-jpaserver-starter-5.2.0/src/main/java/ca/uhn/fhir/jpa/empi/EmpiConfig.java
-/home/Benny/Programas/Programs FHIR/hapi-fhir-jpaserver-starter-5.2.0/src/main/java/ca/uhn/fhir/jpa/starter/FhirServerConfigDstu2.java
-/home/Benny/Programas/Programs FHIR/hapi-fhir-jpaserver-starter-5.2.0/src/main/java/ca/uhn/fhir/jpa/starter/BaseJpaRestfulServer.java
-/home/Benny/Programas/Programs FHIR/hapi-fhir-jpaserver-starter-5.2.0/src/main/java/ca/uhn/fhir/jpa/starter/Application.java
-/home/Benny/Programas/Programs FHIR/hapi-fhir-jpaserver-starter-5.2.0/src/main/java/ca/uhn/fhir/jpa/starter/FhirServerConfigR5.java
+/home/Benny/Programas/HAPI-FHIR-Starter-5.2---TFM-UPC_v1.0/src/main/java/ca/uhn/fhir/jpa/starter/FhirServerConfigR5.java
+/home/Benny/Programas/HAPI-FHIR-Starter-5.2---TFM-UPC_v1.0/src/main/java/ca/uhn/fhir/jpa/starter/EnvironmentHelper.java
+/home/Benny/Programas/HAPI-FHIR-Starter-5.2---TFM-UPC_v1.0/src/main/java/ca/uhn/fhir/jpa/starter/PatientAndAdminAuthorizationInterceptor.java
+/home/Benny/Programas/HAPI-FHIR-Starter-5.2---TFM-UPC_v1.0/src/main/java/ca/uhn/fhir/jpa/starter/AppProperties.java
+/home/Benny/Programas/HAPI-FHIR-Starter-5.2---TFM-UPC_v1.0/src/main/java/ca/uhn/fhir/jpa/starter/JpaRestfulServer.java
+/home/Benny/Programas/HAPI-FHIR-Starter-5.2---TFM-UPC_v1.0/src/main/java/ca/uhn/fhir/jpa/starter/Application.java
+/home/Benny/Programas/HAPI-FHIR-Starter-5.2---TFM-UPC_v1.0/src/main/java/ca/uhn/fhir/jpa/starter/FhirServerConfigCommon.java
+/home/Benny/Programas/HAPI-FHIR-Starter-5.2---TFM-UPC_v1.0/src/main/java/ca/uhn/fhir/jpa/starter/FhirServerConfigDstu3.java
+/home/Benny/Programas/HAPI-FHIR-Starter-5.2---TFM-UPC_v1.0/src/main/java/ca/uhn/fhir/jpa/empi/EmpiConfigCondition.java
+/home/Benny/Programas/HAPI-FHIR-Starter-5.2---TFM-UPC_v1.0/src/main/java/ca/uhn/fhir/jpa/starter/JpaHibernateDialectProvider.java
+/home/Benny/Programas/HAPI-FHIR-Starter-5.2---TFM-UPC_v1.0/src/main/java/ca/uhn/fhir/jpa/starter/FhirTesterConfig.java
+/home/Benny/Programas/HAPI-FHIR-Starter-5.2---TFM-UPC_v1.0/src/main/java/ca/uhn/fhir/jpa/empi/EmpiConfig.java
+/home/Benny/Programas/HAPI-FHIR-Starter-5.2---TFM-UPC_v1.0/src/main/java/ca/uhn/fhir/jpa/starter/FhirServerConfigR4.java
+/home/Benny/Programas/HAPI-FHIR-Starter-5.2---TFM-UPC_v1.0/src/main/java/ca/uhn/fhir/jpa/starter/FhirServerConfigDstu2.java
+/home/Benny/Programas/HAPI-FHIR-Starter-5.2---TFM-UPC_v1.0/src/main/java/ca/uhn/fhir/jpa/starter/BaseJpaRestfulServer.java

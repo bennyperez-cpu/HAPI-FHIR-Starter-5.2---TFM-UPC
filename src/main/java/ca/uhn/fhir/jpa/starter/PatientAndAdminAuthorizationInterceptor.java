@@ -27,7 +27,7 @@ public class PatientAndAdminAuthorizationInterceptor extends AuthorizationInterc
         String authHeader = theRequestDetails.getHeader("Authorization");
         if ("Bearer dfw98h38r".equals(authHeader)) {
             // This user has access only to Patient/1 resources
-            userIdPatientId = new IdType("Patient", 1L);
+            userIdPatientId = new IdType("Patient", "A");
         } else if ("Bearer 39ff939jgg".equals(authHeader)) {
             // This user has access to everything
             userIsAdmin = true;
