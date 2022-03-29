@@ -28,8 +28,22 @@ public class JpaRestfulServer extends BaseJpaRestfulServer {
     super.initialize();
 
     // Add your own customization here
-   // PatientAndAdminAuthorizationInterceptor authInterceptor = new PatientAndAdminAuthorizationInterceptor();
-   // registerInterceptor(authInterceptor);
+    PatientAndAdminAuthorizationInterceptor authInterceptor = new PatientAndAdminAuthorizationInterceptor();
+    registerInterceptor(authInterceptor);
+
+   /* AuthorizationInterceptor authInterceptor = new AuthorizationInterceptor(){
+      @Override
+      public List<IAuthRule> buildRuleList(RequestDetails theRequestDetails) {
+        return new RuleBuilder()
+                .allow().read().resourcesOfType("Patient").inCompartment("Patient", new IdType("Patient/1603")).andThen()
+                .allow().read().resourcesOfType("Observation").inCompartment("Patient", new IdType("Patient/1603")).andThen()
+                .denyAll().andThen()
+                .build();
+      }
+    };
+    registerInterceptor(authInterceptor);
+*/
+
   }
 
 }
