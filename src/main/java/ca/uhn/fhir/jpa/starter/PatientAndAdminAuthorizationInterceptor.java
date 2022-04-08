@@ -1,22 +1,53 @@
 package ca.uhn.fhir.jpa.starter;
 
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
-import ca.uhn.fhir.rest.client.api.IGenericClient;
-import ca.uhn.fhir.rest.client.interceptor.BearerTokenAuthInterceptor;
-import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
 import ca.uhn.fhir.rest.server.interceptor.auth.AuthorizationInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.auth.IAuthRule;
 import ca.uhn.fhir.rest.server.interceptor.auth.RuleBuilder;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Practitioner;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class PatientAndAdminAuthorizationInterceptor extends AuthorizationInterceptor {
 
+    private String getRequestorType (RequestDetails theRequestDetails) {
+        String id = theRequestDetails.getId().toString();
+        String patientId = id.substring(id.indexOf('/') + 1);// Paciente del cual se consulta
+        String authHeader = theRequestDetails.getHeader("Authorization");
+        if (("Bearer " + patientId).equals(authHeader)) {
+            return "Self";
+        }
+        Client client = ClientBuilder.newClient();
+        Response response = client.target("http://localhost:8080/hapi_fhir_jpaserver_starter_war/fhir/")
+                .path("Patient").path(patientId).request(MediaType.APPLICATION_JSON).header("Authorization", "Bearer 39ff939jgg").get();
+        JsonNode node = null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            node = mapper.readTree(response.readEntity(String.class));
+            String patientPractitioner = node.get("generalPractitioner").get(0).get("identifier").get("id").asText();
+            if (("Bearer " + patientPractitioner).equals(authHeader)) {
+                return "PatientPractitioner";
+            }
+            try {
+                String managingOrganization = node.get("managingOrganization").get("identifier").get("id").asText();
+                if (("Bearer " + managingOrganization).equals(authHeader)) {
+                    return "PatientOrganization";
+                }
+            } catch (Exception e) {
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return "Other";
+    }
 
     @Override
     public List<IAuthRule> buildRuleList(RequestDetails theRequestDetails) {
@@ -32,6 +63,8 @@ public class PatientAndAdminAuthorizationInterceptor extends AuthorizationInterc
         boolean userIsPractitioner = false;
         boolean userIsOrganization = false;
 
+        String requestorType = null;
+
         IdType userIdPatientId = null;
         IdType userId = null;
         if ("Bearer 39ff939jgg".equals(authHeader)) {
@@ -39,134 +72,34 @@ public class PatientAndAdminAuthorizationInterceptor extends AuthorizationInterc
             userIsAdmin = true;
         }
         else {
-            String id = theRequestDetails.getId().toString();
-            String patientId = id.substring(id.indexOf('/') + 1);
-
-            FhirContext ctx = FhirContext.forR4();
-            IGenericClient client = ctx.newRestfulGenericClient("http://localhost:8080/fhir/");
-            BearerTokenAuthInterceptor authInterceptor = new BearerTokenAuthInterceptor("39ff939jgg");
-            client.registerInterceptor(authInterceptor);
-
-            Patient patient = client.read().resource(Patient.class).withId(patientId).execute();
-
-            String resourceType_Client = null;
-            String resourceType_Bearer = null;
-
-            resourceType_Client = String.valueOf(patient.getResourceType()); //Revisar
-
-
-            if(resourceType_Client.equals("Patient")){
-
-                if (("Bearer " + patientId).equals(authHeader)) {
-                    // This user has access only to Patient/1 resources
-                    userIdPatientId = new IdType("Patient", patientId);
-                    return new RuleBuilder()
-                            .allow().read().allResources().inCompartment("Patient", userIdPatientId).andThen()
-                            .allow().write().allResources().inCompartment("Patient", userIdPatientId).andThen()
-                            .denyAll()
-                            .build();
-                }else{
-                    // Throw an HTTP 401
-                    return new RuleBuilder()
-                            .denyAll()
-                            .build();
-
-                }
-            }else if (resourceType_Client.equals("Practitioner")){
-                userId = new IdType("Patient", patientId);
-                userIsPractitioner = true;
-                if (("Bearer " + patient.getGeneralPractitionerFirstRep()).equals(authHeader)) {
-                    return new RuleBuilder()
-                            .allow().read().resourcesOfType("Patient").inCompartment("Patient", new IdType(patientId)).andThen()
-                            .allow().read().resourcesOfType("Observation").inCompartment("Patient", new IdType(patientId)).andThen()
-                            .denyAll()
-                            .build();
-
-                }else{
-                    return new RuleBuilder()
-                            .allow().read().resourcesOfType("Patient").inCompartment("Patient", new IdType(patientId)).andThen()                            .denyAll()
-                            .build();
-                }
-
-            }else if (resourceType_Client.equals("Organization")){
-                userId = new IdType("Patient", patientId);
-                userIsOrganization = true;
-                if (("Bearer " + patient.getManagingOrganization()).equals(authHeader)) {
-                    return new RuleBuilder()
-                            .allow().read().resourcesOfType("Patient").inCompartment("Patient", new IdType(patientId)).andThen()
-                            .allow().read().resourcesOfType("Observation").inCompartment("Patient", new IdType(patientId)).andThen()
-                            .denyAll()
-                            .build();
-
-                }else{
-                    return new RuleBuilder()
-                            .denyAll()
-                            .build();
-                }
-
-            }else{
-                // Throw an HTTP 401
-                throw new AuthenticationException( "Missing or invalid Authorization header value " + patient.getId());
-                
-            }
+            requestorType = getRequestorType(theRequestDetails);
         }
 
-        // If the user is a specific patient, we create the following rule chain:
-        // Allow the user to read anything in their own patient compartment
-        // Allow the user to write anything in their own patient compartment
-        // If a client request doesn't pass either of the above, deny it
-
-        /*
-
-        if (userIdPatientId != null) {
-            return new RuleBuilder()
-                    .allow().read().allResources().inCompartment("Patient", userIdPatientId).andThen()
-                    .allow().write().allResources().inCompartment("Patient", userIdPatientId).andThen()
-                    .denyAll()
-                    .build();
-        }
-
-        if (userIsPractitioner) {
-
-        }
-
-        if (userIsOrganization) {
-            return new RuleBuilder()
-                    .allow().read().allResources().inCompartment("Patient", userIdPatientId).andThen()
-                    .allow().write().allResources().inCompartment("Patient", userIdPatientId).andThen()
-                    .denyAll()
-                    .build();
-        }
-
-        // If the user is an admin, allow everything
-        if (userIsAdmin) {
+        if(userIsAdmin || requestorType.equals("Self")){
             return new RuleBuilder()
                     .allowAll()
                     .build();
         }
-*/
+
+        if(requestorType.equals("PatientPractitioner")){
+            return new RuleBuilder()
+                    .allow().read().resourcesOfType("Patient").inCompartment("Patient", new IdType("Patient/A")).andThen()
+                    .allow().read().resourcesOfType("Observation").inCompartment("Patient", new IdType("Patient/A")).andThen()
+                    .denyAll().andThen()
+                    .build();
+        }
+
+        if(requestorType.equals("PatientOrganization")){
+            return new RuleBuilder()
+                    .allowAll()
+                    .build();
+        }
+
+
         // By default, deny everything. This should never get hit, but it's
         // good to be defensive
         return new RuleBuilder()
                 .denyAll()
                 .build();
-
-
     }
 }
-
-/*
-*     AuthorizationInterceptor authInterceptor = new AuthorizationInterceptor(){
-      @Override
-      public List<IAuthRule> buildRuleList(RequestDetails theRequestDetails) {
-        return new RuleBuilder()
-          .allow().read().resourcesOfType("Patient").inCompartment("Patient", new IdType("Patient/A")).andThen()
-          .allow().read().resourcesOfType("Observation").inCompartment("Patient", new IdType("Patient/A")).andThen()
-          .denyAll().andThen()
-          .build();
-      }
-    };
-    registerInterceptor(authInterceptor);
-*
-*
-* */
